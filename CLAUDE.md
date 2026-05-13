@@ -23,13 +23,14 @@ npm run lint     # eslint .
 
 ## Architecture
 
-**Backend** — Express ES Modules. Two route files:
-- `routes/dreams.js` — CRUD for dreams, stored in `data/dreams.json` (synchronous file I/O)
+**Backend** — Express ES Modules + Mongoose. Two route files:
+- `routes/dreams.js` — CRUD for dreams via MongoDB
 - `routes/analyze.js` — POST triggers DeepSeek API call, GET aggregates keywords/mood-trend
+- `models/Dream.js` — Mongoose schema with toJSON transform (maps `_id` → `id`)
 
-**Frontend** — React 19 + Vite + React Router. No TypeScript, no global state (all `useState`/`useEffect` per page). Vite proxies `/api` to backend, but pages also hardcode `http://localhost:3001/api`.
+**Frontend** — React 19 + Vite + React Router. No TypeScript, no global state (all `useState`/`useEffect` per page). Pages use `/api` relative URLs, Vite proxies to backend in dev.
 
-**Data model** — Dreams stored as JSON array. Each dream has `id`, `title`, `content`, `date`, `tags`, `analysis` (nullable), `createdAt`. Analysis contains `emotion`, `emotionScore`, `themes`, `symbols`, `summary`, `keywords`.
+**Data model** — Dreams in MongoDB. Each dream has `id`, `title`, `content`, `date`, `tags`, `analysis` (nullable), `createdAt`. Analysis contains `emotion`, `emotionScore`, `themes`, `symbols`, `summary`, `keywords`.
 
 ## Key Details
 

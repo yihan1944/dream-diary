@@ -4,3 +4,4 @@ dist/
 *.log
 .playwright-mcp/
 .claude/
+backend/data/dreams.json

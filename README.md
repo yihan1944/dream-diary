@@ -5,36 +5,52 @@ React + Node.js 全栈应用，支持记录梦境、AI 情绪/主题分析、关
 ## 技术栈
 
 - **前端**: React + Vite + React Router + Recharts
-- **后端**: Node.js + Express
-- **存储**: JSON 文件本地存储
+- **后端**: Node.js + Express + Mongoose
+- **存储**: MongoDB
 - **AI**: DeepSeek API
 
 ## 快速启动
 
-### 1. 安装后端依赖
+### 1. 启动 MongoDB
+
+```bash
+# 本地 MongoDB
+mongod --dbpath ./data
+
+# 或使用 MongoDB Atlas 免费云数据库
+# https://www.mongodb.com/atlas/database
+```
+
+### 2. 安装后端依赖
 
 ```bash
 cd backend
 npm install
 ```
 
-### 2. 配置环境变量
+### 3. 配置环境变量
 
-复制 `.env.example` 为 `.env`，填入你的 DeepSeek API Key：
+复制 `.env.example` 为 `.env`，填入 API Key 和 MongoDB 连接地址：
 
 ```bash
 cp .env.example .env
-# 编辑 .env 文件，填入 DEEPSEEK_API_KEY
 ```
 
-### 3. 启动后端服务
+`.env` 内容：
+```
+DEEPSEEK_API_KEY=sk-xxxx
+MONGODB_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/dream-diary
+PORT=3001
+```
+
+### 4. 启动后端服务
 
 ```bash
 npm run dev
 # 后端运行在 http://localhost:3001
 ```
 
-### 4. 安装前端依赖并启动
+### 5. 安装前端依赖并启动
 
 ```bash
 cd ../frontend
@@ -42,6 +58,16 @@ npm install
 npm run dev
 # 前端运行在 http://localhost:5173
 ```
+
+## 免费部署
+
+| 层 | 平台 | 说明 |
+|------|------|------|
+| 前端 | Vercel | 免费静态托管，连接 GitHub 自动部署 |
+| 后端 | Render | Node.js 免费额度，支持 MongoDB 连接 |
+| 数据库 | MongoDB Atlas | 免费 512MB，注册即用 |
+
+部署配置见 `render.yaml`。
 
 ## API 接口
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import DreamCard from '../components/DreamCard';
 
-const API = 'http://localhost:3001/api';
+const API = '/api';
 
 export default function CalendarPage() {
   const [dreams, setDreams] = useState([]);

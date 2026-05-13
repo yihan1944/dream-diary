@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import KeywordChart from '../components/KeywordChart';
 import MoodTrend from '../components/MoodTrend';
 
-const API = 'http://localhost:3001/api';
+const API = '/api';
 
 export default function AnalysisPage() {
   const [keywords, setKeywords] = useState([]);
