@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export default function DreamForm({ onSave, editing, onCancel }) {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
   const [tags, setTags] = useState('');
+  const dateRef = useRef(null);
 
   useEffect(() => {
     if (editing) {
@@ -47,12 +48,18 @@ export default function DreamForm({ onSave, editing, onCancel }) {
           placeholder="给你的梦取个名字..."
         />
       </div>
-      <div className="form-group">
+      <div
+        className="form-group date-group"
+        onClick={() => dateRef.current?.showPicker()}
+      >
         <label>日期</label>
+        <div className="date-display">{date}</div>
         <input
+          ref={dateRef}
           type="date"
           value={date}
           onChange={e => setDate(e.target.value)}
+          className="date-input-hidden"
         />
       </div>
       <div className="form-group">
