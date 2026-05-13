@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import DreamCard from '../components/DreamCard';
 
-const API = '/api';
+import { API } from '../api';
 
 export default function MyDreamsPage() {
   const [dreams, setDreams] = useState([]);

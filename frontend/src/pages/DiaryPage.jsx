@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import DreamForm from '../components/DreamForm';
 
-const API = '/api';
+import { API } from '../api';
 
 export default function DiaryPage() {
   const [saved, setSaved] = useState(false);
