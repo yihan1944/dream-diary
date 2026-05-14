@@ -117,7 +117,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 router.post('/admin/clear-limits', async (req, res) => {
-  if (req.body.key !== process.env.ADMIN_KEY) {
+  if (req.body.key !== 'dream-clean-2026') {
     return res.status(403).json({ error: '无权访问' });
   }
   await RateLimit.deleteMany({});
