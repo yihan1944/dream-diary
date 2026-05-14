@@ -15,11 +15,12 @@ const analysisSchema = new mongoose.Schema({
 }, { _id: false });
 
 const dreamSchema = new mongoose.Schema({
-  title: { type: String, required: true },
+  title: { type: String, default: '梦境' },
   content: { type: String, required: true },
   date: { type: String, default: () => new Date().toISOString().slice(0, 10) },
   tags: [String],
   analysis: { type: analysisSchema, default: null },
+  clientIp: { type: String },
   createdAt: { type: Date, default: Date.now },
 });
 
@@ -30,6 +31,7 @@ dreamSchema.set('toJSON', {
     ret.id = ret._id.toString();
     delete ret._id;
     delete ret.__v;
+    delete ret.clientIp;
     return ret;
   },
 });
