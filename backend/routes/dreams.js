@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import Dream from '../models/Dream.js';
+import RateLimit from '../models/RateLimit.js';
 
 const router = Router();
 
@@ -34,15 +35,18 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: '标题和内容不能为空' });
     }
     const ip = req.ip || req.socket.remoteAddress;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const count = await Dream.countDocuments({
-      clientIp: ip,
-      createdAt: { $gte: today },
-    });
-    if (count >= 10) {
+    const bucket = `${ip}_${new Date().toISOString().slice(0, 10)}`;
+
+    const counter = await RateLimit.findOneAndUpdate(
+      { bucket },
+      { $inc: { count: 1 } },
+      { upsert: true, new: true }
+    );
+    if (counter.count > 10) {
+      await RateLimit.updateOne({ bucket }, { $inc: { count: -1 } });
       return res.status(429).json({ error: '今日提交已达上限（10条），请明天再来' });
     }
+
     const dream = await Dream.create({ title, content, date, tags, clientIp: ip });
     res.status(201).json(dream);
   } catch (err) {
