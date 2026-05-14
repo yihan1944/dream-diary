@@ -33,7 +33,17 @@ router.post('/', async (req, res) => {
     if (!title || !content) {
       return res.status(400).json({ error: '标题和内容不能为空' });
     }
-    const dream = await Dream.create({ title, content, date, tags });
+    const ip = req.ip || req.socket.remoteAddress;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const count = await Dream.countDocuments({
+      clientIp: ip,
+      createdAt: { $gte: today },
+    });
+    if (count >= 10) {
+      return res.status(429).json({ error: '今日提交已达上限（10条），请明天再来' });
+    }
+    const dream = await Dream.create({ title, content, date, tags, clientIp: ip });
     res.status(201).json(dream);
   } catch (err) {
     res.status(500).json({ error: err.message });
