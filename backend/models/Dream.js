@@ -15,7 +15,7 @@ const analysisSchema = new mongoose.Schema({
 }, { _id: false });
 
 const dreamSchema = new mongoose.Schema({
-  title: { type: String, required: true },
+  title: { type: String, default: '梦境' },
   content: { type: String, required: true },
   date: { type: String, default: () => new Date().toISOString().slice(0, 10) },
   tags: [String],

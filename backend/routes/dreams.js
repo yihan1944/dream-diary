@@ -31,8 +31,8 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { title, content, date, tags } = req.body;
-    if (!title || !content) {
-      return res.status(400).json({ error: '标题和内容不能为空' });
+    if (!content) {
+      return res.status(400).json({ error: '梦境内容不能为空' });
     }
     const ip = req.ip || req.socket.remoteAddress;
     const bucket = `${ip}_${new Date().toISOString().slice(0, 10)}`;
@@ -47,12 +47,47 @@ router.post('/', async (req, res) => {
       return res.status(429).json({ error: '今日提交已达上限（10条），请明天再来' });
     }
 
-    const dream = await Dream.create({ title, content, date, tags, clientIp: ip });
+    const dream = await Dream.create({ title: title || '梦境', content, date, tags, clientIp: ip });
     res.status(201).json(dream);
+
+    if (!title) {
+      generateTitle(dream._id, content);
+    }
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
+
+async function generateTitle(dreamId, content) {
+  try {
+    const apiKey = process.env.DEEPSEEK_API_KEY;
+    if (!apiKey) return;
+
+    const response = await fetch('https://api.deepseek.com/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'deepseek-v4-pro',
+        max_tokens: 64,
+        messages: [{
+          role: 'user',
+          content: `请为以下梦境内容生成一个简短的标题，不超过10个字，直接返回标题文本，不要加引号、换行或任何修饰。\n\n梦境内容：${content}`,
+        }],
+      }),
+    });
+
+    const data = await response.json();
+    if (data.error) return;
+
+    const generatedTitle = (data.choices[0].message.content || '').trim().slice(0, 10);
+    await Dream.findByIdAndUpdate(dreamId, { title: generatedTitle });
+  } catch {
+    // title generation failure is non-critical
+  }
+}
 
 router.put('/:id', async (req, res) => {
   try {

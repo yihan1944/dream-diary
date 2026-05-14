@@ -23,9 +23,10 @@ export default function DreamForm({ onSave, editing, onCancel }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!title.trim() || !content.trim()) return;
+    if (!content.trim()) return;
+    if (editing && !title.trim()) return;
     onSave({
-      title: title.trim(),
+      title: editing ? title.trim() : '',
       content: content.trim(),
       date,
       tags: tags.split(',').map(t => t.trim()).filter(Boolean),
@@ -40,14 +41,16 @@ export default function DreamForm({ onSave, editing, onCancel }) {
   return (
     <form className="dream-form" onSubmit={handleSubmit}>
       <h2>{editing ? '编辑梦境' : '记录新梦境'}</h2>
-      <div className="form-group">
-        <label>标题</label>
-        <input
-          value={title}
-          onChange={e => setTitle(e.target.value)}
-          placeholder="给你的梦取个名字..."
-        />
-      </div>
+      {editing && (
+        <div className="form-group">
+          <label>标题</label>
+          <input
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+            placeholder="给你的梦取个名字..."
+          />
+        </div>
+      )}
       <div
         className="form-group date-group"
         onClick={() => dateRef.current?.showPicker()}
