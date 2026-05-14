@@ -116,4 +116,12 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+router.post('/admin/clear-limits', async (req, res) => {
+  if (req.body.key !== process.env.ADMIN_KEY) {
+    return res.status(403).json({ error: '无权访问' });
+  }
+  await RateLimit.deleteMany({});
+  res.json({ message: '已清理' });
+});
+
 export default router;
